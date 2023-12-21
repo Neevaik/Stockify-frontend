@@ -1,135 +1,195 @@
 .main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-  }
-
-.mainContent {
   display: flex;
-  margin-top: 1.5rem;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
 }
 
-  .productButton{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
+.mainContent {
+display: flex;
+margin-top: 1.5rem;
+}
 
-  .productButton{
-    margin-left: 10px;
-  }
+.productButton{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
 
-  .dateFilter{
-    width: 225px;
-  }
+.productButton{
+  margin-left: 10px;
+}
 
-  .leftSection{
-    margin-left: 4vw;
-    width: 63 vw !important;
-  }
+.dateFilter{
+  width: 225px;
+}
 
-  .rightSection{
-    width: 33vw !important;
-  }
+.leftSection{
+  margin-left: 4vw;
+  width: 63 vw !important;
+}
 
-  .sale{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
+.rightSection{
+  width: 33vw !important;
+}
 
-  .sales{
-    width: 100%;
-    margin: 0px 10px 0px 10px;
-  }
-  
-  .ant-table-row {
-    background-color: steelblue;
-  
-  }
-  .ant-table-thead{
-    background-color: black;
-  
-  }
-  .LastSales_tableContainer__M76O7{
-    border: 2px solid #000;
-    background-color: #323A57;
-  }
+.sale{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.sales{
+  width: 100%;
+  margin: 0px 10px 0px 10px;
+}
+
+.ant-table-row {
+  background-color: steelblue;
+
+}
+.ant-table-thead{
+  background-color: black;
+
+}
+.LastSales_tableContainer__M76O7{
+  border: 2px solid #000;
+  background-color: #323A57;
+}
 
 
 /* GRAPH SECTION */
-  .filterContainer{
-    margin-top: 30px;
-    width: 100%;
-    display: flex;
+.filterContainer{
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
 
-  }
+}
 
-  .filterArea{
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-  }
+.filterArea{
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
 
-  .filterByTemp{
-    display: flex;
+.filterByTemp{
+  display: flex;
 
-  }
+}
 
-  .filterByTemp>p{
-    margin-right: 20px;
-  }
+.filterByTemp>p{
+  margin-right: 20px;
+}
 
-  .filterByObject{
-    display: flex;
-  }
+.filterByObject{
+  display: flex;
+}
 
-  .filterByObject>p{
-    margin: 20px;
-  }
+.filterByObject>p{
+  margin: 20px;
+}
 
-  .firstChart>h2{
-    margin: 50px;
-  }
+.firstChart>h2{
+  margin: 50px;
+}
 
-  .firstChartCl{
-    color: #fff !important;
-    width: 67vw;
-    height: auto;
-  }
+.firstChartCl{
+  color: #fff !important;
+  width: 67vw;
+  height: auto;
+}
 
-  .productList {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.productList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .productList>h2{
-    margin-top: 0px;
-  }
+.productList>h2{
+  margin-top: 0px;
+}
 
 
-  .rightProductsContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+.rightProductsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  .product {
-    background-color: #323A57;
-    width: 20rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid white;
-    border-radius: 5px;
-  }
+.product {
+  background-color: #323A57;
+  width: 20rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+}
 
+/* Glowing effect for alert */
+.iconContainer {
+position: relative;
+display: inline-block;
+}
+
+.iconWrapper {
+position: relative;
+width: fit-content; /* Ajustez la largeur en fonction de vos besoins */
+height: fit-content; /* Ajustez la hauteur en fonction de vos besoins */
+text-align: end  ; /* Centre les éléments horizontalement */
+}
+
+.iconEffect {
+filter: blur(0px);
+}
+
+.okIcon {
+position: absolute;
+left: 0; /* Ajuster la position par rapport au bord gauche */
+transform: translate(-100%, -75%);
+color: rgba(92, 255, 84, 0.6);
+}
+
+.iconEffectBKGok {
+filter: blur(30px);
+position: absolute;
+transform: translate(-100%, -75%);
+}
+
+.warningIcon {
+position: absolute;
+
+transform: translate(-100%, -75%);
+color: rgb(238, 255, 84, 0.6);
+}
+.iconEffectBKGwarning {
+filter: blur(40px);
+position: absolute;
+
+transform: translate(-100%, -75%);
+}
+
+.redIconsContainer {
+display: grid;
+grid-auto-flow: column; /* Les éléments s'afficheront côte à côte */
+align-items: center;
+}
+
+.alertIcon {
+  left: -15px;
+position: absolute;
+transform: translate(-50%, -75%);
+color: rgb(248, 21, 21);
+}
+
+.iconEffectBKGalert {
+filter: blur(25px);
+position: absolute;
+}

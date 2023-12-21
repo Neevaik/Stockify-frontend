@@ -20,7 +20,7 @@ const DrawerLeft = (props) => {
       <Drawer
         title={
           <Link href="/home">
-            <a className={styles['drawer-link']}>Accueil</a>
+            <a className={styles['drawer-link']}>Home</a>
           </Link>
         }
         placement="left"

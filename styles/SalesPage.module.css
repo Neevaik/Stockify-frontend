@@ -8,10 +8,10 @@
 
 .sales {
   display: flex;
-  width: 50%;
-  height: 50%;
   margin-top: 100px;
+  margin-top: 0;
 }
+
 .ant-table-row {
   background-color: steelblue;
 }
@@ -22,4 +22,19 @@
 .LastSales_tableContainer__M76O7{
   border: 2px solid #000;
   background-color: #323A57;
+}
+
+.productButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-left: 28.5rem;
+  padding-right: 27rem;
+}
+
+
+.dateFilter{
+  width: 225px;
 }

@@ -29,6 +29,7 @@ import transformDataRestock from "./transformDataRestock";
 import transformDataByP from "./transformDataByP";
 
 
+
 function StatsPage() {
   // Get the router object from the 'next/router' module
   const router = useRouter();

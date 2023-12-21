@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
 import AddStock from "./AddStock";
-import Product from './Product';
+import Product from "./Product";
 import Sale from "./Sale";
 import { Table } from "antd";
 import FilterDate from './Tools/FilterDate';
@@ -13,13 +13,13 @@ import { faMinus,faExclamation,faCheck } from '@fortawesome/free-solid-svg-icons
 // Importe CategoryScale de Chart.js pour la mise à l'échelle des catégories sur les graphiques.
 import { CategoryScale } from "chart.js";
 // Enregistre CategoryScale pour une utilisation avec Chart.js.
-Chart.register(CategoryScale); 
+Chart.register(CategoryScale);
 // Importe la version automatique de Chart.js qui sélectionne automatiquement le contrôleur de graphique et l'échelle.
 import Chart from "chart.js/auto";
 // Importe l'adaptateur date-fns pour Chart.js pour la gestion des dates.
-import "chartjs-adapter-date-fns"; 
+import "chartjs-adapter-date-fns";
 // Importe le composant Bar de react-chartjs-2 pour la création de graphiques à barres.
-import { Bar } from "react-chartjs-2"; 
+import { Bar } from "react-chartjs-2";
 
 function Home() {
   const user = useSelector((state) => state.user.value);
@@ -28,11 +28,10 @@ function Home() {
   const [openSaleModal, setSaleModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [displayProducts, setDisplayProducts] = useState([]);
-  const [filter, setFilter] = useState('Today');
+  const [filter, setFilter] = useState("Today");
   const [myProducts, setMyProducts] = useState([]); // affichage des produits
 
   const refreshLastSale = () => {
-
     setRefresh((prevRefresh) => !prevRefresh);
   };
 
@@ -64,12 +63,10 @@ function Home() {
       dataIndex: "stock",
       width: 120,
       sorter: (a, b) => a.stock - b.stock,
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      defaultSortOrder: 'ascend',
-      render:(text) =>(
-        <span className={text <= 10 ? 'low-stock' : 'good-Stock'}>
-        {text}
-        </span>
+      sortDirections: ["ascend", "descend", "ascend"],
+      defaultSortOrder: "ascend",
+      render: (text) => (
+        <span className={text <= 10 ? "low-stock" : "good-Stock"}>{text}</span>
       ),
     },
     {
@@ -77,50 +74,35 @@ function Home() {
       dataIndex: "sales",
       width: 120,
       sorter: (a, b) => a.sales - b.sales,
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      defaultSortOrder: 'ascend',
+      sortDirections: ["ascend", "descend", "ascend"],
+      defaultSortOrder: "ascend",
     },
     {
       title: "Quantity Sold",
       dataIndex: "quantitySold",
       width: 120,
       sorter: (a, b) => a.quantitySold - b.quantitySold,
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      defaultSortOrder: 'ascend',
+      sortDirections: ["ascend", "descend", "ascend"],
+      defaultSortOrder: "ascend",
     },
   ];
 
 
-  const calculateWeekRange = () => {
-    const currentDate = new Date();
-    const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(endOfWeek.getDate() + 6);
-  
-    const startDateString = startOfWeek.toISOString().split("T")[0];
-    const endDateString = endOfWeek.toISOString().split("T")[0];
-  
-    return { startDateString, endDateString };
-  };
-
 
   function convertirFormatDate(dateStr) {
     const dateObj = new Date(dateStr);
-  
-    const jour = dateObj.getDate().toString().padStart(2, '0');
-    const mois = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+
+    const jour = dateObj.getDate().toString().padStart(2, "0");
+    const mois = (dateObj.getMonth() + 1).toString().padStart(2, "0");
     const annee = dateObj.getFullYear();
-  
+
     const dateFormatee = `${jour}/${mois}/${annee}`;
-  
+
     return dateFormatee;
   }
 
-  
   useEffect(() => {
     // Affiche la liste des produits vendus aujourd'hui
-    
-    if(filter == 'Today') {
 
     fetch("http://localhost:3000/products/allProducts")
       .then((response) => response.json())
@@ -132,6 +114,7 @@ function Home() {
         const year = currentDate.getFullYear().toString();
 
         const todayDateString = `${year}-${month}-${date}`;
+        const todayDateFR = `${date}/${month}/${year}`;
 
         let filteredProducts = data.allProducts.filter((product) => {
           let soldDates = product.soldAt.map((sale) => sale.date.split("T")[0]);
@@ -189,7 +172,7 @@ function Home() {
             key: index,
             product: product.name,
             category: product.category[0]?.name || "N/A",
-            date: todayDateString,
+            date: todayDateFR,
             stock: product.stock,
             quantitySold: todaySales.reduce(
               (total, sale) => total + sale.quantity,
@@ -204,83 +187,6 @@ function Home() {
      
         
       });
-    } else if (filter == 'This week') {
-
-    const { startDateString, endDateString } = calculateWeekRange();
-
-    fetch("http://localhost:3000/products/allProducts")
-    .then((response) => response.json())
-    .then((data) => {
-      let filteredProducts = data.allProducts.filter((product) => {
-        let soldDates = product.soldAt.map((sale) => sale.date.split("T")[0]);
-        return soldDates.some(date => date >= startDateString && date <= endDateString);
-      });
-
-      let formattedData = filteredProducts.map((product, index) => {
-        const weekSales = product.soldAt.filter((sale) => {
-          const saleDate = sale.date.split("T")[0];
-          return saleDate >= startDateString && saleDate <= endDateString;
-        });
-        
-        const soldHistory = [
-          product.soldAt
-            ? product.soldAt.map((sale) => ({
-                type: "sold",
-                quantity: sale.quantity,
-                date: convertirFormatDate(sale.date),
-              }))
-            : []
-        ];
-        
-        const restockHistory = [
-          product.restockAt
-            ? product.restockAt.map((restock) => ({
-                type: "restock",
-                quantity: restock.quantity,
-                date: convertirFormatDate(restock.date),
-              }))
-            : []
-        ];
-
-      const historyExtended = soldHistory.concat(restockHistory).flat()
-      .sort((a, b) => {
-        const dateA = a.date.split('/').reverse().join('');
-        const dateB = b.date.split('/').reverse().join('');
-        return parseInt(dateB) - parseInt(dateA);
-      })
-
-      const history = [];
-      for (let i = 0; i < historyExtended.length; i++) {
-        let found = false;
-
-        for (let j = 0; j < history.length; j++) {
-          if (historyExtended[i].type === history[j].type && historyExtended[i].date === history[j].date) {
-            history[j].quantity += historyExtended[i].quantity;
-            found = true;
-            break;
-          }
-        }
-
-        if (!found) {
-          history.push(historyExtended[i] );
-        }
-      }      
-
-        return {
-          key: index,
-          product: product.name,
-          category: product.category[0]?.name || "N/A",
-          date: startDateString + " to " + endDateString,
-          stock: product.stock,
-          quantitySold: weekSales.reduce((total, sale) => total + sale.quantity, 0),
-          sales: weekSales.length,
-          history: history,
-        };
-      });
-
-      setDisplayProducts(formattedData);
-    });
-    }
 
   }, [refresh, filter]);
 
@@ -305,113 +211,116 @@ function Home() {
   /* Statistics Graph Chart */
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  
+
   const handleFilterDateChange = (filter) => {
     setFilter(filter);
   };
 
-// Fetch data from the server for Stock at present day
-const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  // Fetch data from the server for Stock at present day
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
-useEffect(() => {
-  const fetchStockData = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/products/stocksAtDay");
-      const data = await response.json();
+  useEffect(() => {
+    const fetchStockData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/products/stocksAtDay"
+        );
+        const data = await response.json();
 
-      if (data && data.stocksAtDay) {
-        const chartData = {
-          labels: data.stocksAtDay.map(stock => stock.productName),
-          datasets: [
-            {
-              label: "Stock",
-              data: data.stocksAtDay.map(stock => stock.currentStock),
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
-              borderColor: "rgba(75, 192, 192, 1)",
-              borderWidth: 1,
-            },
-          ],
-        };
-        setChartData(chartData);
+        if (data && data.stocksAtDay) {
+          const chartData = {
+            labels: data.stocksAtDay.map((stock) => stock.productName),
+            datasets: [
+              {
+                label: "Stock",
+                data: data.stocksAtDay.map((stock) => stock.currentStock),
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1,
+              },
+            ],
+          };
+          setChartData(chartData);
+        }
+      } catch (error) {
+        console.error("Error fetching stock data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching stock data:", error);
+    };
+
+    fetchStockData();
+  }, [refresh, filter, setChartData]);
+
+  console.log(chartData);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/products/allProducts")
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data.allProducts);
+        if (data.allProducts && data.allProducts.length > 0) {
+          setSelectedProduct(data.allProducts[0]._id);
+        }
+      });
+  }, []);
+
+  // Bar chart component
+  function BarChart({ chartData, yAxisLegend }) {
+    if (chartData && chartData.datasets) {
+      return (
+        <Bar
+          data={chartData}
+          options={{
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: yAxisLegend,
+                },
+                ticks: {
+                  color: "white",
+                },
+                grid: {
+                  color: "#232323",
+                },
+              },
+              x: {
+                ticks: {
+                  color: "white",
+                },
+                grid: {
+                  color: "#232323",
+                },
+              },
+            },
+          }}
+        />
+      );
+    } else {
+      return <p>No data available for the chart.</p>;
     }
-  };
-
-  fetchStockData();
-}, [refresh, filter, setChartData]);
-
-console.log(chartData);
-
-
-useEffect(() => {
-  fetch("http://localhost:3000/products/allProducts")
-    .then((response) => response.json())
-    .then((data) => {
-      setProducts(data.allProducts);
-      if (data.allProducts && data.allProducts.length > 0) {
-        setSelectedProduct(data.allProducts[0]._id);
-      }
-    });
-}, []);
-
-// Bar chart component
-function BarChart({ chartData, yAxisLegend }) {
-
-  if (chartData && chartData.datasets) {
-    return (
-      <Bar
-        data={chartData}
-        options={{
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: yAxisLegend,
-              },
-              ticks: {
-                color: 'white',
-              },
-              grid: {
-                color: '#232323',
-              },
-            },
-            x: {
-              ticks: {
-                color: 'white',
-              },
-              grid: {
-                color: '#232323',
-              },
-            },
-          },
-        }}
-      />
-    );
-  } else {
-    return <p>No data available for the chart.</p>;
   }
-}
 
-useEffect(() => { // pour lister les produits à droite
-  fetch('http://localhost:3000/products/allProducts')
-  .then(response => response.json())
-  .then(data => {
-    let productsSold = [];
-    for(let i=0; i<data.allProducts.length; i++) {
-      let sum = 0;
-      for(let j=0; j<data.allProducts[i].soldAt.length; j++) {
-        sum += data.allProducts[i].soldAt[j].quantity
-      }
-      productsSold.push({
-        name: data.allProducts[i].name,
-        quantitySold: sum,
-        stock: data.allProducts[i].stock
-      })
-    }
-    productsSold = productsSold.sort((a, b) => b.quantitySold - a.quantitySold)
+  useEffect(() => {
+    // pour lister les produits à droite
+    fetch("http://localhost:3000/products/allProducts")
+      .then((response) => response.json())
+      .then((data) => {
+        let productsSold = [];
+        for (let i = 0; i < data.allProducts.length; i++) {
+          let sum = 0;
+          for (let j = 0; j < data.allProducts[i].soldAt.length; j++) {
+            sum += data.allProducts[i].soldAt[j].quantity;
+          }
+          productsSold.push({
+            name: data.allProducts[i].name,
+            quantitySold: sum,
+            stock: data.allProducts[i].stock,
+          });
+        }
+        productsSold = productsSold.sort(
+          (a, b) => b.quantitySold - a.quantitySold
+        );
 
     let topTenProducts = productsSold;
     if(productsSold.length > 10) {
@@ -419,7 +328,7 @@ useEffect(() => { // pour lister les produits à droite
     }
     setMyProducts(topTenProducts);
   })
-}, []);
+}, [refresh]);
 
   return (
     <main className={styles.main}>
@@ -427,19 +336,13 @@ useEffect(() => { // pour lister les produits à droite
         <div className={styles.leftSection}>
           <div className={styles.productButton}>
             <div className={styles.groupButtons}>
-              <button
-                className={styles.addProduct}
-                onClick={handleAddStockButtonClick}
-              >
-                Add stock
-              </button>
-
-              <button className={styles.saleProduct} onClick={handleSaleButtonClick}>
-                Sale Products
-              </button>
+              {/* <div className={styles.product}> Add stock</div>
+              <div className={styles.product}> Sale product</div> */}
+              <button className={styles.addProduct}onClick={handleAddStockButtonClick}> Add stock </button>
+              <button className={styles.saleProduct} onClick={handleSaleButtonClick}> Sale Products </button>
             </div>
             <div className={styles.dateFilter}>
-              <FilterDate handleFilterDateChange={handleFilterDateChange} />
+              <p className={styles.todaySales}>Today's sales</p>
             </div>
           </div>
           <div className={styles.sale}>
@@ -453,67 +356,74 @@ useEffect(() => { // pour lister les produits à droite
                   size="large"
                   style={tableStyle}
                   expandable={{
-                    expandedRowRender: (record) => {  
-                    return (
-                      <ul>
-                      <div style={{ maxHeight: '20rem', overflowY: 'auto' }}>
-                        {record.history.map((operationGroup, groupIndex) => (
-                          <li key={groupIndex}>
-                                {operationGroup.type && operationGroup.quantity && operationGroup.date
-                                  ? `${operationGroup.date.split(' ')[0]}: ${operationGroup.quantity} ${operationGroup.type}`
-                                  : ""} 
-                          </li>
-                        ))}
-                      </div>
-                    </ul>
-                    )},
+                    expandedRowRender: (record) => {
+                      return (
+                        <ul>
+                          <div
+                            style={{ maxHeight: "20rem", overflowY: "auto" }}
+                          >
+                            {record.history.map(
+                              (operationGroup, groupIndex) => (
+                                <li key={groupIndex}>
+                                  {operationGroup.type &&
+                                  operationGroup.quantity &&
+                                  operationGroup.date
+                                    ? `${operationGroup.date.split(" ")[0]}: ${
+                                        operationGroup.quantity
+                                      } ${operationGroup.type}`
+                                    : ""}
+                                </li>
+                              )
+                            )}
+                          </div>
+                        </ul>
+                      );
+                    },
                     rowExpandable: (record) => record.history.length > 0,
                   }}
                 />
               </div>
             </div>
           </div>
-                  {/* GRAPH SECTION */}
+          {/* GRAPH SECTION */}
           <div>
             <div className={styles.firstChart}>
               <h2>Sales Statistics</h2>
-                <BarChart chartData={chartData} yAxisLegend="Quantité en stock" />
+              <BarChart chartData={chartData} yAxisLegend="Quantité en stock" />
             </div>
           </div>
-                    {/* END GRAPH SECTION */}
+          {/* END GRAPH SECTION */}
         </div>
-        
+
         <div className={styles.rightSection}>
 
-                  {/* NATHAN VA TRAVAILLER ICI */}
 
           <div className={styles.productList}>
-            <h2 className={styles.productsTitle}>
-                  Top 10 products
-            </h2>
+            <h2 className={styles.productsTitle}> Top 10 products </h2>
             <div className={styles.rightProductsContainer}>
               {myProducts.length === 0 ? (
                 <p>No products</p>
               ) : (
                 myProducts.map((data, i) => {
                   return (
-                      <div key={i} className={styles.product}>
+                    <div
+                      key={i}
+                      className={`${styles.product} ${styles[data.stockClass]}`}
+                    >
+                      <div className={styles.dataContainer}>
                         {data.name} - {data.stock} in stock
                         {data.stock<10 && <FontAwesomeIcon icon={faMinus} size="2xl" fade color='red'/>}
                         {data.stock<50 && data.stock>=10 && <FontAwesomeIcon icon={faExclamation} size="2xl" color='yellow'/>}
                         {data.stock<100 && data.stock>=50 && <FontAwesomeIcon icon={faCheck} size="2xl" color='green'/>}
                     </div>
-                  )     
-                })
-              )}              
+                  );
+                });
+              )
             </div>
-
           </div>
-          
-
         </div>
       </div>
-      
+
       {openAddStockModal && (
         <AddStock
           openAddStockModal={openAddStockModal}

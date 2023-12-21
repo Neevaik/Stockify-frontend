@@ -1,6 +1,5 @@
-import { SmileOutlined } from '@ant-design/icons';
 import { Button, notification } from 'antd';
-import { BellOutlined } from '@ant-design/icons';
+import { BellOutlined, AlertOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 
 import styles from '../../styles/Header/Notification.module.css'
@@ -8,9 +7,8 @@ import styles from '../../styles/Header/Notification.module.css'
 const NotificationButton = () => {
   const [dataProducts, setDataProducts] = useState(null);
 
-  useEffect(() => {
-    
-  }, []);
+
+
 
   const fetchData = async () => {
     try {
@@ -28,31 +26,45 @@ const NotificationButton = () => {
     }
   };
 
+
   const checkStockAndNotify = (products) => {
     products.forEach((product) => {
       if (product && product.stock && product.soldAt && product.soldAt.length > 0) {
         const lastProduct = product.soldAt.length - 1;
-        if (product.stock <= 5) {
-          openNotification(product.storeName, product.stock, product.soldAt[lastProduct].date);
+        if (product.stock <= 10) {
+          openNotification(product.name, product.stock, product.soldAt[lastProduct].date);
         }
       }
     });
   };
   
 
+  const convertDateFr = (date) => {
+    const inputDate = date;
+    const dateObject = new Date(inputDate);
+
+    const day = dateObject.getDate().toString().padStart(2, '0');
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const year = dateObject.getFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+
+    return formattedDate;
+  }
+
   const openNotification = (productName, productStock, soldAt) => {
     notification.open({
-      message: 'Notifications',
+      message: 'ALERT !',
       description: (
         <div className={styles.mainContainer}>
           <p>
-            Stock de{' '}
-            <span style={{  color: 'black', fontWeight: 'bold' }}>{productName}</span> est critique à{' '}
-            <span style={{ color: 'red', fontWeight: 'bold' }}>{productStock}</span>.
+            Only{' '}
+            <span style={{ color: 'red', fontWeight: 'bold' }}>{productStock}{' '}</span>.
+            <span style={{  color: 'black', fontWeight: 'bold' }}>{productName}{' '}</span> left in stock
           </p>
           <p>
-            La dernière vente est :
-          <span style={{ color: 'black', fontWeight: 'bold' }}> {soldAt}</span>.
+            Last sale on
+          <span style={{ color: 'black', fontWeight: 'bold' }}> {convertDateFr(soldAt)}</span>.
           </p>
         </div>
       ),
@@ -62,11 +74,9 @@ const NotificationButton = () => {
         width: 600,
       },
       icon: (
-        <SmileOutlined
-          style={{
-            color: '#108ee9',
-          }}
-        />
+        <AlertOutlined style={{
+          color: '#108ee9',
+        }}/>
       ),
     });
   };

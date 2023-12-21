@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, List, Button, Modal, Input, Switch } from "antd";
+import { Avatar, List, Button, Modal, Input, Switch, FloatButton } from "antd";
 import styles from "../styles/Pages/Admin.module.css";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPen,
-  faTrash,
-  faUser,
-  faRotateLeft,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPen, faTrash, faUser, faRotateLeft, faPlus, faCircleUser } from "@fortawesome/free-solid-svg-icons";
 const { Search } = Input;
 
 const Admin = () => {
@@ -23,6 +17,8 @@ const Admin = () => {
   const [editedIsAdmin, setEditedIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [createUserModalVisible, setCreateUserModalVisible] = useState(false);
+  const [isAdminFilterActive, setIsAdminFilterActive] = useState(false);
+
 
   const user = useSelector((state) => state.user.value);
   const router = useRouter();
@@ -91,11 +87,11 @@ const Admin = () => {
         const updatedUserData = userData.map((user) =>
           user.key === selectedUser.key
             ? {
-                ...user,
-                isAdmin: editedIsAdmin.toString(),
-                username: editedUsername,
-                email: editedEmail,
-              }
+              ...user,
+              isAdmin: editedIsAdmin.toString(),
+              username: editedUsername,
+              email: editedEmail,
+            }
             : user
         );
 
@@ -146,13 +142,10 @@ const Admin = () => {
     setSearchTerm(value);
   };
 
-  const filteredData = userData.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const handleCreateUserClick = () => {
     setEditedUsername("");
     setEditedEmail("");
+    setCreateUserPassword("")
     setEditedIsAdmin(false);
     setCreateUserModalVisible(true);
   };
@@ -189,6 +182,19 @@ const Admin = () => {
       console.error("Erreur lors de la création du user: ", error);
     }
   };
+
+  const getFilteredData = () => {
+    if (isAdminFilterActive) {
+      return userData.filter(user => user.isAdmin === "true");
+    }
+    return userData.filter((user) =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  const filteredData = getFilteredData();
+
+
   if (user.isAdmin) {
     return (
       <div className={styles.container}>
@@ -199,6 +205,9 @@ const Admin = () => {
             onSearch={handleSearch}
             style={{ marginBottom: 16, marginTop: 16 }}
           />
+          <Button type="primary" onClick={() => setIsAdminFilterActive(!isAdminFilterActive)}>
+            {isAdminFilterActive ? 'Voir tous' : 'Voir Admins'}
+          </Button>
           <Button type="primary" onClick={handleCreateUserClick}>
             Create User
           </Button>
@@ -212,31 +221,28 @@ const Admin = () => {
             }}
             renderItem={(item) => (
               <List.Item className={styles.listItem}>
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${item.key}`}
-                    />
-                  }
-                  title={`${item.username}`}
-                  description={
-                    <>
-                      {item.email}, <br />
-                      Is An Admin: {item.isAdmin.toString()}
-                    </>
-                  }
-                />
-                <Button
-                  type="primary"
-                  className={styles.editButton}
-                  onClick={() => handleEditClick(item.key)}
-                >
-               <FontAwesomeIcon icon={faPen} color="white" />
-                </Button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <List.Item.Meta
+                    avatar={<Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${item.key}`} />}
+                    title={`${item.username}`}
+                    description={item.email}
+                  />
+                  {item.isAdmin.toString() === "true" && (
+                    <FontAwesomeIcon icon={faCircleUser} style={{ fontSize: "2em", marginLeft: '1em', marginRight: '1em', color:'white' }} />
+                  )}
+                  <Button
+                    type="primary"
+                    className={styles.editButton}
+                    onClick={() => handleEditClick(item.key)}
+                  >
+                    <FontAwesomeIcon icon={faPen} color="white" />
+                  </Button>
+                </div>
               </List.Item>
             )}
           />
         </div>
+
         {selectedUser && (
           <Modal
             title={`User information`}

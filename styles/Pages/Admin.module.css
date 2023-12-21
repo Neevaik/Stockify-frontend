@@ -29,10 +29,16 @@
   align-items: center;
 }
 
+.listItem:hover {
+  background-color: #b3acb22c;
+  cursor: pointer;
+}
+
 .editButton {
   margin-right: 12px;
 }
-.btnEditUser{
+
+.btnEditUser {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -40,15 +46,17 @@
 
 }
 
-.createBtn{
+.createBtn {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   width: 100%;
 }
-.cancelBtn{
-  background-color:#734a3f;
+
+.cancelBtn {
+  background-color: #734a3f;
 }
+
 .modalField {
   margin-bottom: 16px;
 }
@@ -62,3 +70,11 @@
 .switchField {
   margin-left: 8px;
 }
+
+
+.centered_text {
+  display: flex;
+  justify-content: center;
+  color: #808080;
+}
+

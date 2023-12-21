@@ -18,6 +18,7 @@ function ProductsPage(props) {
   const [image, setImage] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [categoryName, setCategoryName] = useState('');
+  const [myCategory, setMyCategory] = useState('');
   const [productName, setProductName] = useState('');
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState([]);
@@ -69,10 +70,16 @@ function ProductsPage(props) {
         const response = await fetch('http://localhost:3000/products/allProducts');
         const data = await response.json();
 
-        if (selectedFilters.length === 0) {
-          setMyProducts(data.allProducts);
-          return;
-        }
+        if(selectedFilters.length === 0) {
+          if (triggerSortByStock === "Stock Ascending") {
+            setMyProducts([...data.allProducts].sort(compareByStock));
+          } else if (triggerSortByStock === "Stock Descending") {
+            setMyProducts([...data.allProducts].sort(compareByStock).reverse());
+          } else {
+            setMyProducts(data.allProducts);
+          }
+
+        } else {
 
         let productTab = [];
 
@@ -84,24 +91,28 @@ function ProductsPage(props) {
           }
         }
 
-        if (JSON.stringify(productTab) === JSON.stringify([])) {
-          setMyProducts([]);
-        } else {
+        // if (JSON.stringify(productTab) === JSON.stringify([])) {
+        //   setMyProducts([]);
+        // } 
+
           if (triggerSortByStock === "Stock Ascending") {
             setMyProducts(productTab.sort(compareByStock));
+            console.log(triggerSortByStock)
           } else if (triggerSortByStock === "Stock Descending") {
             setMyProducts(productTab.sort(compareByStock).reverse());
           } else {
             setMyProducts(productTab);
           }
-        }
+         }
+         
       } catch (error) {
-        console.error('Erreur lors de la récupération des produits filtrés :', error);
-      }
+        console.error('Erreur lors de la récupération des produits filtrés :', error);    
+    }
     };
 
     fetchData();
   }, [refreshProducts, selectedFilters, triggerSortByStock]);
+
 
   useEffect(() => {
     fetch('http://localhost:3000/categories/allCategories')
@@ -130,10 +141,6 @@ function ProductsPage(props) {
     return 0;
   }
 
-  const handleTriStockButton = () => {
-    setTriggerSortByStock(!triggerSortByStock);
-  };
-
 
   const handleCloseButton = () => {
     setOpenAddProductModal(false);
@@ -160,15 +167,16 @@ function ProductsPage(props) {
     setPrice(price);
     setStock(stock);
     setImage(image);
-    console.log(image);
+    setMyCategory(category);
   };
+
 
   const closeEditModal = () => {
     setOpenEditModal(false);
   };
 
   const handleNameInputChange = (event) => {
-    setProductName(event);
+    setProductName(event.target.value);
   };
 
   const handleSelectChange = (event) => {
@@ -176,21 +184,22 @@ function ProductsPage(props) {
     let id = category.find(element => element.name === catName)
     setCategoryId(id._id);
     setCategoryName(catName);
+    setMyCategory(catName);
   };
 
   const handlePriceInputChange = (event) => {
-    const isValidInput = /^-?\d*\.?\d*$/.test(event);
+    const isValidInput = /^-?\d*\.?\d*$/.test(event.target.value);
 
     if (isValidInput) {
-      setPrice(event);
+      setPrice(event.target.value);
     };
   };
 
   const handleStockInputChange = (event) => {
-    const isValidInput = /^-?\d*\.?\d*$/.test(event);
+    const isValidInput = /^-?\d*\.?\d*$/.test(event.target.value);
 
     if (isValidInput) {
-      setStock(event);
+      setStock(event.target.value);
     };
   };
 
@@ -218,7 +227,6 @@ function ProductsPage(props) {
 
   const handleStockFilterChange = (stockFilterChange) => {
     setTriggerSortByStock(stockFilterChange);
-
   }
 
 
@@ -262,7 +270,7 @@ function ProductsPage(props) {
             </div>
             <div className={styles.inputContainer}>
               <p className={styles.inputName}> Category</p>
-              <Select className={styles.selectInput} onChange={handleSelectChange} >
+              <Select className={styles.selectInput} onChange={handleSelectChange} value={myCategory} >
                 {category.map((data, index) => (
                   <option key={index} value={data.name}> {data.name} </option>
                 ))}
