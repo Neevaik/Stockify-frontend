@@ -5,15 +5,9 @@ import styles from "../styles/Home.module.css";
 import AddStock from "./AddStock";
 import Sale from "./Sale";
 import { Table } from "antd";
-import FilterDate from "./Tools/FilterDate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
-import {
-  faMinus,
-  faExclamation,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 
 // Importe CategoryScale de Chart.js pour la mise à l'échelle des catégories sur les graphiques.
 import { CategoryScale } from "chart.js";
@@ -31,7 +25,7 @@ function Home() {
   const [openSaleModal, setSaleModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [displayProducts, setDisplayProducts] = useState([]);
-  const [filter, setFilter] = useState("Today");
+  const [filter] = useState("Today");
   const [myProducts, setMyProducts] = useState([]); // affichage des produits
 
   const refreshLastSale = () => {
@@ -213,10 +207,6 @@ function Home() {
   /* Statistics Graph Chart */
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
-  // const handleFilterDateChange = (filter) => {
-  //   setFilter(filter);
-  // };
 
   // Fetch data from the server for Stock at present day
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
