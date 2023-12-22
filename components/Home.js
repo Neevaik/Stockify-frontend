@@ -3,12 +3,10 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
 import AddStock from "./AddStock";
-import Product from "./Product";
 import Sale from "./Sale";
 import { Table } from "antd";
-import FilterDate from './Tools/FilterDate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus,faExclamation,faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCircle,faMinus,faExclamation,faCheck } from '@fortawesome/free-solid-svg-icons';
 
 // Importe CategoryScale de Chart.js pour la mise à l'échelle des catégories sur les graphiques.
 import { CategoryScale } from "chart.js";
@@ -16,8 +14,6 @@ import { CategoryScale } from "chart.js";
 Chart.register(CategoryScale);
 // Importe la version automatique de Chart.js qui sélectionne automatiquement le contrôleur de graphique et l'échelle.
 import Chart from "chart.js/auto";
-// Importe l'adaptateur date-fns pour Chart.js pour la gestion des dates.
-import "chartjs-adapter-date-fns";
 // Importe le composant Bar de react-chartjs-2 pour la création de graphiques à barres.
 import { Bar } from "react-chartjs-2";
 
@@ -212,9 +208,9 @@ function Home() {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const handleFilterDateChange = (filter) => {
-    setFilter(filter);
-  };
+  // const handleFilterDateChange = (filter) => {
+  //   setFilter(filter);
+  // };
 
   // Fetch data from the server for Stock at present day
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
@@ -412,13 +408,70 @@ function Home() {
                     >
                       <div className={styles.dataContainer}>
                         {data.name} - {data.stock} in stock
-                        {data.stock<10 && <FontAwesomeIcon icon={faMinus} size="2xl" fade color='red'/>}
-                        {data.stock<50 && data.stock>=10 && <FontAwesomeIcon icon={faExclamation} size="2xl" color='yellow'/>}
-                        {data.stock<100 && data.stock>=50 && <FontAwesomeIcon icon={faCheck} size="2xl" color='green'/>}
+                      </div>
+
+                      <div>
+                        <div className={styles.iconContainer}>
+                          {data.stock < 20 && (
+                            <div className={styles.iconWrapper}>
+                              <FontAwesomeIcon
+                                icon={faExclamation}
+                                size="2xl"
+                                color="red"
+                                fade
+                                className={`${styles.alertIcon} ${styles.iconEffect}`}
+                              />
+                              <FontAwesomeIcon
+                                icon={faCircle}
+                                size="2xl"
+                                color="red"
+                                fade
+                                className={`${styles.alertIcon} ${styles.iconEffectBKGalert}`}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <div className={styles.iconContainer}>
+                          {data.stock >= 20 && data.stock < 50 && (
+                            <div className={styles.iconWrapper}>
+                              <FontAwesomeIcon
+                                icon={faMinus}
+                                size="2xl"
+                                color="yellow"
+                                className={`${styles.warningIcon} ${styles.iconEffect}`}
+                              />
+                              <FontAwesomeIcon
+                                icon={faCircle}
+                                size="2xl"
+                                color="yellow"
+                                className={`${styles.warningIconIcon} ${styles.iconEffectBKGwarning}`}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <div className={styles.iconContainer}>
+                          {data.stock >= 50 && (
+                            <div className={styles.iconWrapper}>
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                size="2xl"
+                                color="green"
+                                className={`${styles.okIcon} ${styles.iconEffect}`}
+                              />
+                              <FontAwesomeIcon
+                                icon={faCircle}
+                                size="2xl"
+                                color="green"
+                                className={`${styles.okIcon} ${styles.iconEffectBKGok}`}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   );
-                });
-              )
+                })
+              )}
             </div>
           </div>
         </div>

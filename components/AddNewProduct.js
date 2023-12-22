@@ -11,7 +11,6 @@ function AddNewProduct(props) {
     const [productImage, setProductImage] = useState("https://res.cloudinary.com/dj6bueyfl/image/upload/v1702976676/stockpic_unkgms.jpg");
     const [category, setCategory] = useState([]);
     const [categotyId, setCategoryId] = useState('');
-    const [selectedOption, setSelectedOption] = useState(''); // Stock le choix de la catégorie
     const [selectedFile, setSelectedFile] = useState(null); // pour le css du bouton de choix d'un fichier
 
 
@@ -61,13 +60,14 @@ function AddNewProduct(props) {
             formData.append('category', categotyId);
             formData.append('price', productPrice); 
 
+            
         fetch('http://localhost:3000/products/newProductWithImage', {
             method: 'POST',
             body: formData,
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
+            
             });
             props.handleCloseButton(); 
         }

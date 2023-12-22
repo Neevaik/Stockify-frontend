@@ -91,9 +91,7 @@ function ProductsPage(props) {
           }
         }
 
-        // if (JSON.stringify(productTab) === JSON.stringify([])) {
-        //   setMyProducts([]);
-        // } 
+     
 
           if (triggerSortByStock === "Stock Ascending") {
             setMyProducts(productTab.sort(compareByStock));
