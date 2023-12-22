@@ -27,7 +27,7 @@ const DrawerLeft = (props) => {
         width={200}
         onClose={onClose}
         closable={false}
-        visible={props.isDrawerOpen}
+        open={props.isDrawerOpen}
         className={styles.main}
       >
         <p className={styles['drawer-link']} onClick={() => router.push('/products')}>

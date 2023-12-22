@@ -4,7 +4,7 @@ import styles from "../styles/Pages/Admin.module.css";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrash, faUser, faRotateLeft, faPlus, faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faTrash, faUser, faRotateLeft, faPlus, faCircleUser, faCheck } from "@fortawesome/free-solid-svg-icons";
 const { Search } = Input;
 
 const Admin = () => {
@@ -245,8 +245,7 @@ const Admin = () => {
 
         {selectedUser && (
           <Modal
-            title={`User information`}
-            visible={modalVisible}
+            open={modalVisible}
             onCancel={handleModalClose}
             footer={[
               <div className={styles.btnEditUser}>
@@ -260,43 +259,47 @@ const Admin = () => {
                 </Button>
 
                 <Button key="save" type="primary" onClick={handleSaveChanges}>
-                  <FontAwesomeIcon icon={faUser} color="white" />
+                  <FontAwesomeIcon icon={faCheck} color="white" />
                 </Button>
               </div>,
             ]}
+            width={450} height={900}
           >
-            <div className={styles.modalField}>
-              <label htmlFor="editedUsername">Username:</label>
-              <Input
-                id="editedUsername"
-                value={editedUsername}
-                onChange={(e) => setEditedUsername(e.target.value)}
-              />
-            </div>
-            <div className={styles.modalField}>
-              <label htmlFor="editedEmail">Email:</label>
-              <Input
-                id="editedEmail"
-                value={editedEmail}
-                onChange={(e) => setEditedEmail(e.target.value)}
-              />
-            </div>
-            <div className={styles.switchContainer}>
-              <label htmlFor="editedIsAdmin">isAdmin:</label>
-              <div className={styles.switchField}>
-                <Switch
-                  id="editedIsAdmin"
-                  checked={editedIsAdmin}
-                  onChange={(checked) => setEditedIsAdmin(checked)}
+            <div>
+              <h2 className={styles.modalTitle}> Edit User</h2>
+              <div className={styles.modalField}>
+                <label htmlFor="editedUsername">Username:</label>
+                <Input
+                  id="editedUsername"
+                  value={editedUsername}
+                  onChange={(e) => setEditedUsername(e.target.value)}
                 />
+              </div>
+              <div className={styles.modalField}>
+                <label htmlFor="editedEmail">Email:</label>
+                <Input
+                  id="editedEmail"
+                  value={editedEmail}
+                  onChange={(e) => setEditedEmail(e.target.value)}
+                />
+              </div>
+              <div className={styles.switchContainer}>
+                <label htmlFor="editedIsAdmin">isAdmin:</label>
+                <div className={styles.switchField}>
+                  <Switch
+                    id="editedIsAdmin"
+                    checked={editedIsAdmin}
+                    onChange={(checked) => setEditedIsAdmin(checked)}
+                    className={styles.nohover}
+                  />
+                </div>
               </div>
             </div>
           </Modal>
         )}
         {createUserModalVisible && (
           <Modal
-            title={`Create User`}
-            visible={createUserModalVisible}
+            open={createUserModalVisible}
             onCancel={handleCreateUserModalClose}
             footer={[
               <div className={styles.createBtn}>
@@ -308,40 +311,49 @@ const Admin = () => {
                 </Button>
               </div>,
             ]}
+            width={450} height={900}
           >
-            <div className={styles.modalField}>
-              <label htmlFor="editedUsername">Username:</label>
-              <Input
-                id="editedUsername"
-                value={editedUsername}
-                onChange={(e) => setEditedUsername(e.target.value)}
-              />
-            </div>
-            <div className={styles.modalField}>
-              <label htmlFor="editedEmail">Email:</label>
-              <Input
-                id="editedEmail"
-                value={editedEmail}
-                onChange={(e) => setEditedEmail(e.target.value)}
-              />
-            </div>
-            <div className={styles.modalField}>
-              <label htmlFor="createUserPassword">Password:</label>
-              <Input
-                id="createUserPassword"
-                type="password"
-                value={createUserPassword}
-                onChange={(e) => setCreateUserPassword(e.target.value)}
-              />
-            </div>
-            <div className={styles.switchContainer}>
-              <label htmlFor="editedIsAdmin">isAdmin:</label>
-              <div className={styles.switchField}>
-                <Switch
-                  id="editedIsAdmin"
-                  checked={editedIsAdmin}
-                  onChange={(checked) => setEditedIsAdmin(checked)}
+            <div> 
+              <h2 className={styles.modalTitle}>CREATE USER</h2>
+              <div className={styles.modalField}>
+                <label htmlFor="editedUsername">Username:</label>
+                <Input
+                  id="editedUsername"
+                  placeholder='username'
+                  value={editedUsername}
+                  onChange={(e) => setEditedUsername(e.target.value)}
                 />
+              </div>
+              <div className={styles.modalField}>
+                <label htmlFor="editedEmail">Email:</label>
+                <Input
+                  id="editedEmail"
+                  placeholder='email'
+                  value={editedEmail}
+                  onChange={(e) => setEditedEmail(e.target.value)}
+                />
+              </div>
+              <div className={styles.modalField}>
+                <label htmlFor="createUserPassword">Password:</label>
+                <Input
+                  id="createUserPassword"
+                  type="password"
+                  defaultValue=''
+                  placeholder='password'
+                  value={createUserPassword}
+                  onChange={(e) => setCreateUserPassword(e.target.value)}
+                />
+              </div>
+              <div className={styles.switchContainer}>
+                <label htmlFor="editedIsAdmin">isAdmin:</label>
+                <div className={styles.switchField}>
+                  <Switch
+                    id="editedIsAdmin"
+                    checked={editedIsAdmin}
+                    onChange={(checked) => setEditedIsAdmin(checked)}
+                    className={styles.nohover}
+                  />
+                </div>
               </div>
             </div>
           </Modal>
