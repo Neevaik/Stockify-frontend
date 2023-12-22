@@ -12,7 +12,7 @@ const NotificationButton = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/products/allProducts');
+      const response = await fetch('https://stockify-backend-wheat.vercel.app/products/allProducts');
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }

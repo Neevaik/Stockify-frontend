@@ -47,9 +47,25 @@
 .rightContainer {
   display: flex;
   justify-content: space-between;
-  width: 7rem;
 }
 
 .userName {
+  margin-top: 19px;
   color: #000;
+}
+
+.welcome{
+  color: #000;
+  font-size: larger;
+  margin-right: 5px;
+}
+
+.nameContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width:30%;
+  margin-top: 3px;
+
 }

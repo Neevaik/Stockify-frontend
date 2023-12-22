@@ -13,7 +13,7 @@ function Sale(props) {
 
 
     useEffect(() => { // Fetch la liste des produit pour le menu déroulant
-        fetch('http://localhost:3000/products/allProducts')
+        fetch('https://stockify-backend-wheat.vercel.app/products/allProducts')
         .then(response => response.json())
         .then(data => {
             let products = [];
@@ -34,7 +34,7 @@ function Sale(props) {
         if(!sales || !selectedOption) {
             window.confirm('Empty fields !');
         } else {
-            fetch(`http://localhost:3000/products/sell/${selectedOption}/${sales}`, {
+            fetch(`https://stockify-backend-wheat.vercel.app/products/sell/${selectedOption}/${sales}`, {
                 method: 'PUT',
                 headers: { 'Content-type': 'application/json' },
             })

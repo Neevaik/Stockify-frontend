@@ -53,6 +53,7 @@
 .title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .inputField {
@@ -67,4 +68,9 @@
 
 .selectInput{
   width: 18rem!important;
+  margin: 0;
+}
+
+.image {
+  border-radius: 2rem;
 }

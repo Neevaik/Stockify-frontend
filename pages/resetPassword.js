@@ -19,7 +19,7 @@ const ResetPassword = () => {
 
     const handleSubmit = async (values) => {
         try {
-            const response = await fetch('http://localhost:3000/users/resetPassword', {
+            const response = await fetch('https://stockify-backend-wheat.vercel.app/users/resetPassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

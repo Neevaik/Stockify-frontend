@@ -3,7 +3,7 @@ import AddNewProduct from './AddNewProduct';
 import Product from './Product';
 import FilterCascader from './Tools/FilterCascader';
 import FilterStock from './Tools/FilterStock';
-import { Modal, Input, Select } from 'antd';
+import { Modal, Input, Select,Spin  } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
@@ -27,6 +27,8 @@ function ProductsPage(props) {
   const router = useRouter();
   const [nameToSave, setNameToSave] = useState('');
 
+  const [spinning, setSpinning] = useState(false);
+
   useEffect(() => {
     if (!user.token) {
       router.push('/');
@@ -37,22 +39,7 @@ function ProductsPage(props) {
     const fetchData = async () => {
       try {
         setTimeout(async () => {
-          const response = await fetch('http://localhost:3000/products/allProducts');
-          const data = await response.json();
-          setMyProducts(data.allProducts);
-        }, 1000)
-      } catch (error) {
-        console.error('Erreur lors de la récupération des produits :', error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setTimeout(async () => {
-          const response = await fetch('http://localhost:3000/categories/allCategories');
+          const response = await fetch('https://stockify-backend-wheat.vercel.app/categories/allCategories');
           const data = await response.json();
           setCategory(data.allCategories);
           setCategoryId(data.allCategories[0]._id);
@@ -67,9 +54,14 @@ function ProductsPage(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/products/allProducts');
-        const data = await response.json();
+        setSpinning(true);
 
+        setTimeout(async () => {
+
+        const response = await fetch('https://stockify-backend-wheat.vercel.app/products/allProducts');
+        const data = await response.json();
+        setSpinning(false);
+      
         if(selectedFilters.length === 0) {
           if (triggerSortByStock === "Stock Ascending") {
             setMyProducts([...data.allProducts].sort(compareByStock));
@@ -91,7 +83,6 @@ function ProductsPage(props) {
           }
         }
 
-     
 
           if (triggerSortByStock === "Stock Ascending") {
             setMyProducts(productTab.sort(compareByStock));
@@ -102,7 +93,7 @@ function ProductsPage(props) {
             setMyProducts(productTab);
           }
          }
-         
+        }, 1000)
       } catch (error) {
         console.error('Erreur lors de la récupération des produits filtrés :', error);    
     }
@@ -113,7 +104,7 @@ function ProductsPage(props) {
 
 
   useEffect(() => {
-    fetch('http://localhost:3000/categories/allCategories')
+    fetch('https://stockify-backend-wheat.vercel.app/categories/allCategories')
       .then(response => response.json())
       .then(data => {
         let categories = [];
@@ -148,7 +139,7 @@ function ProductsPage(props) {
   const handleDeleteButton = (name) => {
     const isConfirmed = window.confirm('Are you sure you want to delete this product?');
     if (isConfirmed) {
-      fetch(`http://localhost:3000/products/deleteProduct/${name}`, {
+      fetch(`https://stockify-backend-wheat.vercel.app/products/deleteProduct/${name}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -202,7 +193,7 @@ function ProductsPage(props) {
   };
 
   const handleSaveButton = () => {
-    fetch(`http://localhost:3000/products/updateMyProduct/${nameToSave}`, {
+    fetch(`https://stockify-backend-wheat.vercel.app/products/updateMyProduct/${nameToSave}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: productName, category: categoryId, price: price, stock: stock })
@@ -229,7 +220,9 @@ function ProductsPage(props) {
 
 
   return (
+
     <div className={styles.main}>
+      <Spin spinning={spinning} fullscreen />
       <div className={styles.filtersContainer}>
         <div className={styles.myFilters}>
           <FilterCascader handleFilterChange={handleFilterChange} />
@@ -247,11 +240,11 @@ function ProductsPage(props) {
             return <Product key={i} name={data.name} stock={data.stock} price={data.price} category={data.category[0].name} image={data.image} handleDeleteButton={handleDeleteButton} handleEditButton={handleEditButton} />
           })
         )}
-      </div>
+      </div> 
 
-      <Modal className={styles.modalMainContent} open={openEditModal} onCancel={closeEditModal} footer={null} width={800} height={800}>
+      <Modal className={styles.modalMainContent} open={openEditModal} onCancel={closeEditModal} footer={null} width={450} height={800}>
         <div className={styles.modalMainContent}>
-          <img src={image} alt={productName} />
+          <img src={image} alt={productName} className={styles.image} />
           <div className={styles.title} > Update product </div>
           <div className={styles.mainContainer}>
             <div className={styles.inputContainer}>
@@ -274,7 +267,7 @@ function ProductsPage(props) {
                 ))}
               </Select>
             </div>
-            <button onClick={() => handleSaveButton()} > Submit </button>
+            <button onClick={() => handleSaveButton()} > Save </button>
           </div>
         </div>
 

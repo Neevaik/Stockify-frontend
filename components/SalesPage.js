@@ -56,6 +56,11 @@ function SalesPage() {
       sorter: (a, b) => a.stock - b.stock,
       sortDirections: ['ascend', 'descend', 'ascend'],
       defaultSortOrder: 'ascend',
+      render:(text) =>(
+        <span className={text <= 20 ? 'low-stock' : 'good-Stock'}>
+        {text}
+        </span>
+        )
     },
     {
       title: "Number of sales",
@@ -64,11 +69,6 @@ function SalesPage() {
       sorter: (a, b) => a.sales - b.sales,
       sortDirections: ['ascend', 'descend', 'ascend'],
       defaultSortOrder: 'ascend',
-      render:(text) =>(
-        <span className={text <= 10 ? 'low-stock' : 'good-Stock'}>
-        {text}
-        </span>
-        )
     },
     {
       title: "Quantity Sold",
@@ -112,7 +112,7 @@ function SalesPage() {
     
     if(filter == 'Today') {
 
-    fetch("http://localhost:3000/products/allProducts")
+    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
 
@@ -199,7 +199,7 @@ function SalesPage() {
 
     const { startDateString, endDateString } = calculateWeekRange();
 
-    fetch("http://localhost:3000/products/allProducts")
+    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
     .then((response) => response.json())
     .then((data) => {
       let filteredProducts = data.allProducts.filter((product) => {

@@ -1,34 +1,32 @@
- // Importe la bibliothèque React.
+// Importe la bibliothèque React.
 import React from "react";
 // Importe les styles CSS pour la page des statistiques.
-import styles from "../styles/StatsPage.module.css"; 
+import styles from "../styles/StatsPage.module.css";
 // Importe les hooks useEffect, useState et useRef de React.
-import { useEffect, useState, useRef } from "react"; 
+import { useEffect, useState, useRef } from "react";
 // Importe le hook useSelector de Redux pour accéder à l'état du store.
-import { useSelector } from "react-redux"; 
+import { useSelector } from "react-redux";
 // Importe le hook useRouter de Next.js pour la gestion des routes.
-import { useRouter } from "next/router"; 
+import { useRouter } from "next/router";
 
 // Importe CategoryScale de Chart.js pour la mise à l'échelle des catégories sur les graphiques.
 import { CategoryScale } from "chart.js";
 // Enregistre CategoryScale pour une utilisation avec Chart.js.
-Chart.register(CategoryScale); 
+Chart.register(CategoryScale);
 // Importe la version automatique de Chart.js qui sélectionne automatiquement le contrôleur de graphique et l'échelle.
 import Chart from "chart.js/auto";
 // Importe l'adaptateur date-fns pour Chart.js pour la gestion des dates.
-import "chartjs-adapter-date-fns"; 
+import "chartjs-adapter-date-fns";
 // Importe le composant Bar de react-chartjs-2 pour la création de graphiques à barres.
-import { Bar } from "react-chartjs-2"; 
+import { Bar } from "react-chartjs-2";
 // Importe le composant Line de react-chartjs-2 pour la création de graphiques linéaires.
-import { Line } from "react-chartjs-2"; 
+import { Line } from "react-chartjs-2";
 
 // Importe des fonctions de transformation de données spécifiques.
 import transformDataSell from "./transformDataSell";
 import transformDataStock from "./transformDataStock";
 import transformDataRestock from "./transformDataRestock";
 import transformDataByP from "./transformDataByP";
-
-
 
 function StatsPage() {
   // Get the router object from the 'next/router' module
@@ -87,7 +85,7 @@ function StatsPage() {
       try {
         // Fetch all categories
         const responseCategories = await fetch(
-          "http://localhost:3000/categories/allCategories"
+          "https://stockify-backend-wheat.vercel.app/categories/allCategories"
         );
         const dataCategories = await responseCategories.json();
         // Update the category state with the fetched categories
@@ -98,7 +96,7 @@ function StatsPage() {
 
         // Fetch all products
         const responseProducts = await fetch(
-          "http://localhost:3000/products/allProducts"
+          "https://stockify-backend-wheat.vercel.app/products/allProducts"
         );
         const dataProducts = await responseProducts.json();
 
@@ -126,10 +124,9 @@ function StatsPage() {
         const transformedDataStock = transformDataStock(
           filteredProducts,
           filter,
-          timeFilter,
+          timeFilter
         );
         setSecondChartData({ ...transformedDataStock });
-      
 
         // Transform data for restock chart
         const transformedDataRestock = transformDataRestock(
@@ -153,7 +150,7 @@ function StatsPage() {
   }, [filter, categoryState.categoryId, timeFilter]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/products/allProducts")
+    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
         setProducts(data.allProducts);
@@ -179,7 +176,7 @@ function StatsPage() {
   }, [products, selectedProduct, timeFilterByP]);
 
   // State pour l'option de légende
-  const [yAxisLegend, setYAxisLegend] = useState('');
+  const [yAxisLegend, setYAxisLegend] = useState("");
 
   // Bar chart component
   function BarChart({ chartData, yAxisLegend }) {
@@ -197,20 +194,20 @@ function StatsPage() {
                   text: yAxisLegend, // Utilisation de la prop pour la légende de l'axe Y
                 },
                 ticks: {
-                  color: 'white' // Change la couleur du texte de l'axe y en blanc
+                  color: "white", // Change la couleur du texte de l'axe y en blanc
                 },
                 grid: {
-                  color: '#232323' // Change la couleur des lignes d'axe pour l'axe x
-                }
+                  color: "#232323", // Change la couleur des lignes d'axe pour l'axe x
+                },
               },
               x: {
                 ticks: {
-                  color: 'white' // Change la couleur du texte de l'axe x en blanc
+                  color: "white", // Change la couleur du texte de l'axe x en blanc
                 },
                 grid: {
-                  color: '#232323' // Change la couleur des lignes d'axe pour l'axe x
-                }
-              }
+                  color: "#232323", // Change la couleur des lignes d'axe pour l'axe x
+                },
+              },
               // ... Autres configurations de l'axe Y
             },
             // ... Autres options pour le graphique
@@ -226,9 +223,8 @@ function StatsPage() {
     // ... Votre logique pour récupérer ou transformer les données du graphique
 
     // Mettre à jour la légende de l'axe Y avec "quantité"
-    setYAxisLegend('Quantité');
+    setYAxisLegend("Quantité");
   }, [chartData]); // Assurez-vous de mettre à jour lorsque les données du graphique changent
-
 
   // If data is not loaded, show a loading indicator
   if (!dataLoaded) {
@@ -239,46 +235,44 @@ function StatsPage() {
   function LineChart({ chartData }) {
     if (chartData && chartData.datasets) {
       return (
-      <Line data={chartData} 
-      options={{
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: yAxisLegend, 
+        <Line
+          data={chartData}
+          options={{
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: yAxisLegend,
+                },
+                ticks: {
+                  color: "white", // Change la couleur du texte de l'axe y en blanc
+                },
+                grid: {
+                  color: "#232323", // Change la couleur des lignes d'axe pour l'axe x
+                },
+              },
+              x: {
+                ticks: {
+                  color: "white", // Change la couleur du texte de l'axe x en blanc
+                },
+                grid: {
+                  color: "#232323", // Change la couleur des lignes d'axe pour l'axe x
+                },
+              },
             },
-            ticks: {
-              color: 'white' // Change la couleur du texte de l'axe y en blanc
-            },
-            grid: {
-              color: '#232323' // Change la couleur des lignes d'axe pour l'axe x
-            }
-          },
-          x: {
-            ticks: {
-              color: 'white' // Change la couleur du texte de l'axe x en blanc
-            },
-            grid: {
-              color: '#232323' // Change la couleur des lignes d'axe pour l'axe x
-            }
-          }
-        },
-        
-      }}
-    />
-      )
+          }}
+        />
+      );
     } else {
       return <p>Pas de données disponibles pour le graphique.</p>;
     }
     //return <Line data={chartData} />;
-  } 
+  }
 
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.titleContainer}>
-
-      </div>
+      <div className={styles.titleContainer}></div>
 
       <div className={styles.filterContainer}>
         <div className={styles.filterArea}>
@@ -304,30 +298,30 @@ function StatsPage() {
           <h2>Current Stock Statistics</h2>
           {!isLoading && (
             <BarChart
-            className={styles.firstChartCl}
-            chartData={chartData}
-            yAxisLegend={yAxisLegend} // Prop pour l'option de légende
-          />
+              className={styles.firstChartCl}
+              chartData={chartData}
+              yAxisLegend={yAxisLegend} // Prop pour l'option de légende
+            />
           )}
         </div>
         <div className={styles.thirdChart}>
-          <h2>Replenishment statistics</h2>
+          <h2>Restock statistics</h2>
           {!isLoading && (
             <BarChart
-            className={styles.firstChartCl}
-            chartData={chartData}
-            yAxisLegend={yAxisLegend} // Prop pour l'option de légende
-          />         
+              className={styles.firstChartCl}
+              chartData={chartData}
+              yAxisLegend={yAxisLegend} // Prop pour l'option de légende
+            />
           )}
         </div>
         <div className={styles.firstChart}>
           <h2>Sales Statistics</h2>
           {!isLoading && (
             <BarChart
-            className={styles.firstChartCl}
-            chartData={chartData}
-            yAxisLegend={yAxisLegend} // Prop pour l'option de légende
-          />        
+              className={styles.firstChartCl}
+              chartData={chartData}
+              yAxisLegend={yAxisLegend} // Prop pour l'option de légende
+            />
           )}
         </div>
       </div>

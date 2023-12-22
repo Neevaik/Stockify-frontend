@@ -10,7 +10,7 @@ const ForgotPassword = () => {
     const handleSubmit = async (values) => {
         try {
             // Envoie une requête POST au backend avec l'adresse e-mail pour réinitialiser le mot de passe
-            const response = await fetch('http://localhost:3000/users/forgotPassword', {
+            const response = await fetch('https://stockify-backend-wheat.vercel.app/users/forgotPassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

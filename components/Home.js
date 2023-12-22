@@ -5,8 +5,15 @@ import styles from "../styles/Home.module.css";
 import AddStock from "./AddStock";
 import Sale from "./Sale";
 import { Table } from "antd";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle,faMinus,faExclamation,faCheck } from '@fortawesome/free-solid-svg-icons';
+import FilterDate from "./Tools/FilterDate";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMinus,
+  faExclamation,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
 // Importe CategoryScale de Chart.js pour la mise à l'échelle des catégories sur les graphiques.
 import { CategoryScale } from "chart.js";
@@ -62,7 +69,7 @@ function Home() {
       sortDirections: ["ascend", "descend", "ascend"],
       defaultSortOrder: "ascend",
       render: (text) => (
-        <span className={text <= 10 ? "low-stock" : "good-Stock"}>{text}</span>
+        <span className={text <= 20 ? "low-stock" : "good-Stock"}>{text}</span>
       ),
     },
     {
@@ -83,8 +90,6 @@ function Home() {
     },
   ];
 
-
-
   function convertirFormatDate(dateStr) {
     const dateObj = new Date(dateStr);
 
@@ -98,12 +103,9 @@ function Home() {
   }
 
   useEffect(() => {
-    // Affiche la liste des produits vendus aujourd'hui
-
-    fetch("http://localhost:3000/products/allProducts")
+    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
-
         const currentDate = new Date();
         const date = currentDate.getDate().toString();
         const month = (currentDate.getMonth() + 1).toString();
@@ -118,7 +120,9 @@ function Home() {
         });
 
         let formattedData = filteredProducts.map((product, index) => {
-          const todaySales = product.soldAt.filter((sale) => sale.date.split("T")[0] === todayDateString);
+          const todaySales = product.soldAt.filter(
+            (sale) => sale.date.split("T")[0] === todayDateString
+          );
 
           const soldHistory = [
             product.soldAt
@@ -127,9 +131,9 @@ function Home() {
                   quantity: sale.quantity,
                   date: convertirFormatDate(sale.date),
                 }))
-              : []
+              : [],
           ];
-          
+
           const restockHistory = [
             product.restockAt
               ? product.restockAt.map((restock) => ({
@@ -137,22 +141,27 @@ function Home() {
                   quantity: restock.quantity,
                   date: convertirFormatDate(restock.date),
                 }))
-              : []
+              : [],
           ];
 
-        const historyExtended = soldHistory.concat(restockHistory).flat()
-        .sort((a, b) => {
-          const dateA = a.date.split('/').reverse().join('');
-          const dateB = b.date.split('/').reverse().join('');
-          return parseInt(dateB) - parseInt(dateA);
-        })
+          const historyExtended = soldHistory
+            .concat(restockHistory)
+            .flat()
+            .sort((a, b) => {
+              const dateA = a.date.split("/").reverse().join("");
+              const dateB = b.date.split("/").reverse().join("");
+              return parseInt(dateB) - parseInt(dateA);
+            });
 
-        const history = [];
+          const history = [];
           for (let i = 0; i < historyExtended.length; i++) {
             let found = false;
 
             for (let j = 0; j < history.length; j++) {
-              if (historyExtended[i].type === history[j].type && historyExtended[i].date === history[j].date) {
+              if (
+                historyExtended[i].type === history[j].type &&
+                historyExtended[i].date === history[j].date
+              ) {
                 history[j].quantity += historyExtended[i].quantity;
                 found = true;
                 break;
@@ -160,7 +169,7 @@ function Home() {
             }
 
             if (!found) {
-              history.push(historyExtended[i] );
+              history.push(historyExtended[i]);
             }
           }
 
@@ -178,12 +187,9 @@ function Home() {
             history: history,
           };
         });
-       
-        setDisplayProducts(formattedData);
-     
-        
-      });
 
+        setDisplayProducts(formattedData);
+      });
   }, [refresh, filter]);
 
   const tableStyle = {
@@ -219,7 +225,7 @@ function Home() {
     const fetchStockData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/products/stocksAtDay"
+          "https://stockify-backend-wheat.vercel.app/products/stocksAtDay"
         );
         const data = await response.json();
 
@@ -249,7 +255,7 @@ function Home() {
   console.log(chartData);
 
   useEffect(() => {
-    fetch("http://localhost:3000/products/allProducts")
+    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
         setProducts(data.allProducts);
@@ -299,7 +305,7 @@ function Home() {
 
   useEffect(() => {
     // pour lister les produits à droite
-    fetch("http://localhost:3000/products/allProducts")
+    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
         let productsSold = [];
@@ -318,13 +324,13 @@ function Home() {
           (a, b) => b.quantitySold - a.quantitySold
         );
 
-    let topTenProducts = productsSold;
-    if(productsSold.length > 10) {
-      topTenProducts = productsSold.slice(0, 10);
-    }
-    setMyProducts(topTenProducts);
-  })
-}, [refresh]);
+        let topTenProducts = productsSold;
+        if (productsSold.length > 10) {
+          topTenProducts = productsSold.slice(0, 10);
+        }
+        setMyProducts(topTenProducts);
+      });
+  }, [refresh]);
 
   return (
     <main className={styles.main}>
@@ -334,8 +340,20 @@ function Home() {
             <div className={styles.groupButtons}>
               {/* <div className={styles.product}> Add stock</div>
               <div className={styles.product}> Sale product</div> */}
-              <button className={styles.addProduct}onClick={handleAddStockButtonClick}> Add stock </button>
-              <button className={styles.saleProduct} onClick={handleSaleButtonClick}> Sale Products </button>
+              <button
+                className={styles.addProduct}
+                onClick={handleAddStockButtonClick}
+              >
+                {" "}
+                Add stock{" "}
+              </button>
+              <button
+                className={styles.saleProduct}
+                onClick={handleSaleButtonClick}
+              >
+                {" "}
+                Sale Products{" "}
+              </button>
             </div>
             <div className={styles.dateFilter}>
               <p className={styles.todaySales}>Today's sales</p>
@@ -384,7 +402,7 @@ function Home() {
           {/* GRAPH SECTION */}
           <div>
             <div className={styles.firstChart}>
-              <h2>Sales Statistics</h2>
+              <h2>Stock Statistics</h2>
               <BarChart chartData={chartData} yAxisLegend="Quantité en stock" />
             </div>
           </div>
@@ -392,8 +410,6 @@ function Home() {
         </div>
 
         <div className={styles.rightSection}>
-
-
           <div className={styles.productList}>
             <h2 className={styles.productsTitle}> Top 10 products </h2>
             <div className={styles.rightProductsContainer}>
@@ -416,14 +432,14 @@ function Home() {
                             <div className={styles.iconWrapper}>
                               <FontAwesomeIcon
                                 icon={faExclamation}
-                                size="2xl"
+                                size="xl"
                                 color="red"
                                 fade
                                 className={`${styles.alertIcon} ${styles.iconEffect}`}
                               />
                               <FontAwesomeIcon
                                 icon={faCircle}
-                                size="2xl"
+                                size="xl"
                                 color="red"
                                 fade
                                 className={`${styles.alertIcon} ${styles.iconEffectBKGalert}`}
@@ -431,30 +447,30 @@ function Home() {
                             </div>
                           )}
                         </div>
-                        <div className={styles.iconContainer}>
+                        {/* <div className={styles.iconContainer}>
                           {data.stock >= 20 && data.stock < 50 && (
                             <div className={styles.iconWrapper}>
                               <FontAwesomeIcon
                                 icon={faMinus}
-                                size="2xl"
+                                size="xl"
                                 color="yellow"
                                 className={`${styles.warningIcon} ${styles.iconEffect}`}
                               />
                               <FontAwesomeIcon
                                 icon={faCircle}
-                                size="2xl"
+                                size="xl"
                                 color="yellow"
                                 className={`${styles.warningIconIcon} ${styles.iconEffectBKGwarning}`}
                               />
                             </div>
                           )}
-                        </div>
-                        <div className={styles.iconContainer}>
+                        </div> */}
+                        {/* <div className={styles.iconContainer}>
                           {data.stock >= 50 && (
                             <div className={styles.iconWrapper}>
                               <FontAwesomeIcon
                                 icon={faCheck}
-                                size="2xl"
+                                size="xl"
                                 color="green"
                                 className={`${styles.okIcon} ${styles.iconEffect}`}
                               />
@@ -466,7 +482,7 @@ function Home() {
                               />
                             </div>
                           )}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   );

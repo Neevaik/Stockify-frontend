@@ -16,7 +16,7 @@ function AddNewProduct(props) {
 
 
     useEffect(() => { // fetch toutes les catégories pour le menu déroulant de la modal
-        fetch('http://localhost:3000/categories/allCategories')
+        fetch('https://stockify-backend-wheat.vercel.app/categories/allCategories')
         .then(response => response.json())
         .then(data => {
             let categories = [];
@@ -36,7 +36,7 @@ function AddNewProduct(props) {
     const handleSubmitButton = () => {
 
         if(productImage === "https://res.cloudinary.com/dj6bueyfl/image/upload/v1702976676/stockpic_unkgms.jpg") {
-            fetch('http://localhost:3000/products/newProduct', {
+            fetch('https://stockify-backend-wheat.vercel.app/products/newProduct', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: productName, image: productImage, stock: productStock, category: categotyId, price: productPrice }),
@@ -103,7 +103,6 @@ function AddNewProduct(props) {
     
 
     const handleSelectChange = (event) => { // Gère le choix de la catégorie et cherche son ID
-        console.log(event)
         let catName = event;
         let id=category.find(element => element.name === catName)
         setCategoryId(id._id);

@@ -17,7 +17,7 @@ const Login = () => {
 
     const handleSubmit = async (values) => {
         try {
-            const response = await fetch('http://localhost:3000/users/signin', {
+            const response = await fetch('https://stockify-backend-wheat.vercel.app/users/signin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

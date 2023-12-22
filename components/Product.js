@@ -17,7 +17,7 @@ function Product (props) {
     return (
     <div className={styles.productContainer} >
         <div className={styles.productContent}>
-            <h3 className={styles.nomProduit}>{props.name.toUpperCase()}</h3>
+            <h3 className={styles.nomProduit}>{props.name}</h3>
             <img src={props.image} alt={props.name} className={styles.img} />
             <p className={styles.stock}>Stock: {props.stock} {' '}
                 {props.stock<10 && <FontAwesomeIcon icon={faTriangleExclamation} color='yellow' />}

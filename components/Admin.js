@@ -31,7 +31,7 @@ const Admin = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/users/allUser");
+      const response = await fetch("https://stockify-backend-wheat.vercel.app/users/allUser");
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
@@ -69,7 +69,7 @@ const Admin = () => {
   const handleSaveChanges = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/users/updateUser/${selectedUser.key}`,
+        `https://stockify-backend-wheat.vercel.app/users/updateUser/${selectedUser.key}`,
         {
           method: "PUT",
           headers: { "Content-type": "application/json" },
@@ -113,7 +113,7 @@ const Admin = () => {
     if (isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:3000/users/${selectedUser.email}`,
+          `https://stockify-backend-wheat.vercel.app/users/${selectedUser.email}`,
           {
             method: "DELETE",
           }
@@ -156,7 +156,7 @@ const Admin = () => {
 
   const handleCreateUser = async () => {
     try {
-      const response = await fetch("http://localhost:3000/users/addUser", {
+      const response = await fetch("https://stockify-backend-wheat.vercel.app/users/addUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
