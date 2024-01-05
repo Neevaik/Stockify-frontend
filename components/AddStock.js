@@ -12,7 +12,7 @@ function AddStock(props) {
     
 
     useEffect(() => { // Fetch la liste des produit pour le menu déroulant
-        fetch('https://stockify-backend-wheat.vercel.app/products/allProducts')
+        fetch('http://localhost:3000/products/allProducts')
         .then(response => response.json())
         .then(data => {
             let products = [];
@@ -33,7 +33,7 @@ function AddStock(props) {
         if(!stockToAdd || !selectedOption) {
             window.confirm('Empty fields !');
         } else {
-            fetch(`https://stockify-backend-wheat.vercel.app/products/addStock/${selectedOption}/${stockToAdd}`, {
+            fetch(`http://localhost:3000/products/addStock/${selectedOption}/${stockToAdd}`, {
                 method: 'PUT',
                 headers: { 'Content-type': 'application/json' },
             })

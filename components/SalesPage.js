@@ -86,8 +86,8 @@ function SalesPage() {
     const startOfWeekDate = startOfWeek(currentDate);
     const endOfWeekDate = endOfWeek(currentDate);
   
-    const startDateString = format(startOfWeekDate, 'dd/MM/yyyy');
-    const endDateString = format(endOfWeekDate, 'dd/MM/yyyy');
+    const startDateString = format(startOfWeekDate, 'yyyy/MM/dd');
+    const endDateString = format(endOfWeekDate, 'yyyy/MM/dd');
   
     return { startDateString, endDateString };
   };
@@ -101,7 +101,7 @@ function SalesPage() {
     const mois = (dateObj.getMonth() + 1).toString().padStart(2, '0');
     const annee = dateObj.getFullYear();
   
-    const dateFormatee = `${jour}/${mois}/${annee}`;
+    const dateFormatee = `${annee}/${mois}/${jour}`;
   
     return dateFormatee;
   }
@@ -112,13 +112,13 @@ function SalesPage() {
     
     if(filter == 'Today') {
 
-    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
+    fetch("http://localhost:3000/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
 
         const currentDate = new Date();
-        const date = currentDate.getDate().toString();
-        const month = (currentDate.getMonth() + 1).toString();
+        const date = currentDate.getDate().toString().padStart(2, '0');
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
         const year = currentDate.getFullYear().toString();
 
         const todayDateString = `${year}-${month}-${date}`;
@@ -199,7 +199,7 @@ function SalesPage() {
 
     const { startDateString, endDateString } = calculateWeekRange();
 
-    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
+    fetch("http://localhost:3000/products/allProducts")
     .then((response) => response.json())
     .then((data) => {
       let filteredProducts = data.allProducts.filter((product) => {
@@ -261,7 +261,7 @@ function SalesPage() {
           key: index,
           product: product.name,
           category: product.category[0]?.name || "N/A",
-          date: startDateString + " to " + endDateString,
+          date: startDateString + '-' + endDateString,
           stock: product.stock,
           quantitySold: weekSales.reduce((total, sale) => total + sale.quantity, 0),
           sales: weekSales.length,

@@ -97,12 +97,12 @@ function Home() {
   }
 
   useEffect(() => {
-    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
+    fetch("http://localhost:3000/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
         const currentDate = new Date();
-        const date = currentDate.getDate().toString();
-        const month = (currentDate.getMonth() + 1).toString();
+        const date = currentDate.getDate().toString().padStart(2, '0');;
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
         const year = currentDate.getFullYear().toString();
 
         const todayDateString = `${year}-${month}-${date}`;
@@ -215,7 +215,7 @@ function Home() {
     const fetchStockData = async () => {
       try {
         const response = await fetch(
-          "https://stockify-backend-wheat.vercel.app/products/stocksAtDay"
+          "http://localhost:3000/products/stocksAtDay"
         );
         const data = await response.json();
 
@@ -245,7 +245,7 @@ function Home() {
   console.log(chartData);
 
   useEffect(() => {
-    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
+    fetch("http://localhost:3000/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
         setProducts(data.allProducts);
@@ -295,7 +295,7 @@ function Home() {
 
   useEffect(() => {
     // pour lister les produits à droite
-    fetch("https://stockify-backend-wheat.vercel.app/products/allProducts")
+    fetch("http://localhost:3000/products/allProducts")
       .then((response) => response.json())
       .then((data) => {
         let productsSold = [];

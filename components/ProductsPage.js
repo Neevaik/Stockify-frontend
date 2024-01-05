@@ -39,7 +39,7 @@ function ProductsPage(props) {
     const fetchData = async () => {
       try {
         setTimeout(async () => {
-          const response = await fetch('https://stockify-backend-wheat.vercel.app/categories/allCategories');
+          const response = await fetch('http://localhost:3000/categories/allCategories');
           const data = await response.json();
           setCategory(data.allCategories);
           setCategoryId(data.allCategories[0]._id);
@@ -58,7 +58,7 @@ function ProductsPage(props) {
 
         setTimeout(async () => {
 
-        const response = await fetch('https://stockify-backend-wheat.vercel.app/products/allProducts');
+        const response = await fetch('http://localhost:3000/products/allProducts');
         const data = await response.json();
         setSpinning(false);
       
@@ -104,7 +104,7 @@ function ProductsPage(props) {
 
 
   useEffect(() => {
-    fetch('https://stockify-backend-wheat.vercel.app/categories/allCategories')
+    fetch('http://localhost:3000/categories/allCategories')
       .then(response => response.json())
       .then(data => {
         let categories = [];
@@ -139,7 +139,7 @@ function ProductsPage(props) {
   const handleDeleteButton = (name) => {
     const isConfirmed = window.confirm('Are you sure you want to delete this product?');
     if (isConfirmed) {
-      fetch(`https://stockify-backend-wheat.vercel.app/products/deleteProduct/${name}`, {
+      fetch(`http://localhost:3000/products/deleteProduct/${name}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -193,7 +193,7 @@ function ProductsPage(props) {
   };
 
   const handleSaveButton = () => {
-    fetch(`https://stockify-backend-wheat.vercel.app/products/updateMyProduct/${nameToSave}`, {
+    fetch(`http://localhost:3000/products/updateMyProduct/${nameToSave}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: productName, category: categoryId, price: price, stock: stock })

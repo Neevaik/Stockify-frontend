@@ -6,14 +6,14 @@ import React, { useState, useEffect } from 'react';
 
 
 function Sale(props) {
-
+    const [selectedProduct, setSelectedProduct] = useState({ name: '', stock: 0 });
     const [selectedOption, setSelectedOption] = useState(''); // Pour récupérer le produit choisie par le user
     const [productList, setProductList] = useState([]);
     const [sales, setSales] = useState('');
 
 
     useEffect(() => { // Fetch la liste des produit pour le menu déroulant
-        fetch('https://stockify-backend-wheat.vercel.app/products/allProducts')
+        fetch('http://localhost:3000/products/allProducts')
         .then(response => response.json())
         .then(data => {
             let products = [];
@@ -31,10 +31,12 @@ function Sale(props) {
 
 
     const handleSubmitButton = () => {
-        if(!sales || !selectedOption) {
+        if(!sales || !selectedProduct.name) {
             window.confirm('Empty fields !');
+        } else if (parseInt(sales) > selectedProduct.stock) {
+            window.confirm('Cannot sell more than the available stock!');
         } else {
-            fetch(`https://stockify-backend-wheat.vercel.app/products/sell/${selectedOption}/${sales}`, {
+            fetch(`http://localhost:3000/products/sell/${selectedProduct.name}/${sales}`, {
                 method: 'PUT',
                 headers: { 'Content-type': 'application/json' },
             })
@@ -42,14 +44,15 @@ function Sale(props) {
             .then(data => {
                 props.handleCloseButton();
                 props.refreshLastSale();
-                openNotification(selectedOption, sales);
+                openNotification(selectedProduct.name, sales);
             });
         }
     };
 
 
-    const handleSelectChange = (event) => { // Gère le choix du produit
-        setSelectedOption(event);
+    const handleSelectChange = (value) => { // Gère le choix du produit
+        const product = productList.find(p => p.name === value);
+    setSelectedProduct({ name: product.name, stock: product.stock })
     };
 
     const handleStockInputChange = (event) => {
